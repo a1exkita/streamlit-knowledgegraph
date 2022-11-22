@@ -1,0 +1,2 @@
+rdflib==6.0.2
+streamlit_agraph==0.0.42
