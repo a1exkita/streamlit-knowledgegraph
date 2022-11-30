@@ -1,13 +1,12 @@
+import os
+import json
 import streamlit as st
-from streamlit_agraph import agraph, Config
-from rdflib import Graph, Literal
+from rdflib import Graph, Literal, Namespace
 from rdflib.namespace import RDF, XSD
-# from SPARQLWrapper import SPARQLWrapper, JSON
 from pymantic import sparql
+from streamlit_agraph import agraph, Config
 from streamlit_agraph.node import Node
 from streamlit_agraph.edge import Edge
-import json
-from rdflib import Graph, Namespace
 from helper import query_to_sparql
 
 MAP_FILENAME = {
@@ -17,10 +16,10 @@ MAP_FILENAME = {
 
 
 def generate_graph(model):
-    with open(f"{model}_filter.json") as f:
+    with open(f"json/{model}_filter.json") as f:
         triplets = json.load(f)
 
-    with open(f'{model}_ontology.json') as f:
+    with open(f'json/{model}_ontology.json') as f:
         allKeys = json.load(f)
         entityOnto = allKeys['entities']
         relationOnto = allKeys['relation']
@@ -175,7 +174,9 @@ if __name__ == "__main__":
 
         # Generate n3 file from RDF graph (one-time)
         # res = graph.serialize(format='n3')
-        # with open(f'test_{MAP_FILENAME[model_name]}.n3', mode='w') as f:
+        # n3_out_path = f"n3/test_{MAP_FILENAME[model_name]}.n3"
+        # os.makedirs(os.path.dirname(n3_out_path), exist_ok=True)
+        # with open(n3_out_path, mode='w') as f:
         #     f.write(res)
 
         # Set up connection with blazegraph server
@@ -183,9 +184,9 @@ if __name__ == "__main__":
             f'http://localhost:9999/blazegraph/sparql')
 
         # Load n3 file into blazegraph (one-time)
-        # cwd = os.getcwd()
-        # server.update(
-        #     f'load <file://{cwd}/test_{MAP_FILENAME[model_name]}.n3>')
+        cwd = os.getcwd()
+        server.update(
+            f'load <file://{cwd}/n3/test_{MAP_FILENAME[model_name]}.n3>')
 
         st.subheader("Query")
         text_input = st.text_input(
@@ -214,7 +215,7 @@ if __name__ == "__main__":
             if result_dict['type'] == "entity":
                 st.subheader("Visualized Graph")
                 nodes, edges = gen_nodes_edges(subgraph)
-                config = Config(width=400, height=200)
+                config = Config(width=500, height=500)
                 return_value = agraph(nodes=nodes,
                                       edges=edges,
                                       config=config)
