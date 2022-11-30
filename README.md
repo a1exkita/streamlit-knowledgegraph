@@ -1,5 +1,5 @@
 # streamlit-knowledgegraph
-## Set up 🚀
+## 🚀 Set up
 - Prerequisites
   - Download blazegraph.jar file from [the official blazegraph release 2.1.6](https://github.com/blazegraph/database/releases/tag/BLAZEGRAPH_2_1_6_RC).
   - Install java 9+
